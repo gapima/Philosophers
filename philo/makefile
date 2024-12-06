@@ -3,7 +3,7 @@
 NAME = philo
 
 CC = cc
-CFLAGS = -g3 -Wunreachable-code -Ofast
+CFLAGS = -g3 -Wall -Wextra -Werror -lpthread
 RM = rm -f
 
 INC = ./include
