@@ -12,7 +12,7 @@ LIBFT = ./libft
 HEADERS = -I $(INC)
 LIBS = ./libft/libft.a
 
-FILES = src/main.c
+FILES = src/main.c src/routine.c src/output.c
 OBJS = $(FILES:%.c=%.o)
 
 all: $(NAME)
