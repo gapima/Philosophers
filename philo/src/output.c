@@ -1,6 +1,5 @@
 #include "philo.h"
 
-
 void    get_forks(t_philo *philo)
 {
     pthread_mutex_lock(philo->fork_left);
@@ -19,9 +18,14 @@ void    leave_forks(t_philo *philo)
 
 void    print_action(t_action action, t_philo *philo)
 {
-    unsigned long time_now;
+    long time_now;
 
     pthread_mutex_lock(&philo->table->write_action);
+    if (!philo->table->simulation_running)
+    {
+        pthread_mutex_unlock(&philo->table->write_action);
+        return ;
+    }
     time_now = ft_get_time() - philo->table->time_start;
     ft_putnbr_fd(time_now, 1);
     ft_putstr_fd(" ", 1);

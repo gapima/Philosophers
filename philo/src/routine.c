@@ -1,8 +1,6 @@
 #include "philo.h"
-#include <pthread.h>
 
-
-unsigned long ft_get_time()
+long ft_get_time()
 {
 	struct timeval tv;
 
@@ -13,7 +11,7 @@ unsigned long ft_get_time()
 
 void sleep_routine(int time_sleep)
 {
-    unsigned long time_now;
+    long time_now;
 
     time_now = ft_get_time() + time_sleep;
     while (ft_get_time() < time_now)
@@ -34,16 +32,51 @@ void   eat_routine(t_philo *philo)
    leave_forks(philo);
 }
 
+void    *check_died(void *data)
+{
+    t_philo *philo;
+
+    philo = data;
+	while (philo->table->simulation_running)
+    {
+        pthread_mutex_lock(&philo->eat_now);
+        if ((ft_get_time() - philo->eat_last_time) >= philo->table->time_to_die)
+        {
+            print_action(DIED, philo);
+            // pthread_mutex_lock(&philo->table->write_action);
+            philo->table->simulation_running = false;
+            // pthread_mutex_unlock(&philo->table->write_action);
+            pthread_mutex_unlock(&philo->eat_now);
+            break;
+        }
+        if (philo->table->number_of_times_each_philosopher_must_eat > -1 \
+        && philo->quantity_eat == philo->table->number_of_times_each_philosopher_must_eat)
+        {
+            pthread_mutex_lock(&philo->table->how_philo_eat);
+            philo->table->quantity_have_philo++;
+            philo->quantity_eat++;
+            pthread_mutex_unlock(&philo->table->how_philo_eat);
+        }
+        pthread_mutex_unlock(&philo->eat_now);
+        sleep_routine(1);
+    }
+    return (NULL);
+}
+
 void    *routine(void *data)
 {
-	t_philo *philo;
-	
+	t_philo     *philo;
+    pthread_t   thread;
+
 	philo = data;
+    philo->eat_last_time = ft_get_time();
+    pthread_create(&thread, NULL, check_died, philo);
 	while (philo->table->simulation_running)
 	{
 		eat_routine(philo);
 		print_action(THINKING, philo);
 	}
+    pthread_join(thread, NULL);
 	return (NULL);
 }
 

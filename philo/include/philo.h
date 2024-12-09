@@ -1,6 +1,7 @@
 #ifndef PHILO_H
 # define PHILO_H
 
+// #include <bits/pthreadtypes.h>
 # include <pthread.h>
 # include <limits.h>
 # include <unistd.h>
@@ -17,6 +18,9 @@ typedef struct s_table
 	int 			time_to_eat;
 	int 			time_to_sleep;
 	int				number_of_times_each_philosopher_must_eat;
+	pthread_t		verify_each_eat;
+	int				quantity_have_philo;
+	pthread_mutex_t	how_philo_eat;
 	pthread_mutex_t *all_fork;
 	bool			simulation_running;
 	unsigned long	time_start;
@@ -45,7 +49,7 @@ typedef enum e_action
 } t_action;
 
 void    *routine(void *data);
-unsigned long ft_get_time();
+long ft_get_time();
 void    print_action(t_action action, t_philo *philo);
 void sleep_routine(int time_sleep);
 void    leave_forks(t_philo *philo);
