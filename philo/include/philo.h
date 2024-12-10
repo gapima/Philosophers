@@ -54,4 +54,5 @@ void	sleep_routine(int time_sleep);
 void	leave_forks(t_philo *philo);
 void	get_forks(t_philo *philo);
 void	eat_routine(t_philo *philo);
+void	ft_destroy(t_philo *philo);
 #endif

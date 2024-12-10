@@ -1,22 +1,5 @@
 #include "philo.h"
-
-static void	ft_destroy(t_philo *philo)
-{
-	int			count;
-	t_table		*table;
-
-	count = 0;
-	table = philo->table;
-	pthread_mutex_destroy(&table->write_action);
-	while (count < table->number_of_philosophers)
-	{
-		pthread_mutex_destroy(&philo[count].eat_now);
-		pthread_mutex_destroy(&table->all_fork[count]);
-		count++;
-	}
-	free(philo);
-	free(table->all_fork);
-}
+#include <stdlib.h>
 
 static	void ft_delegateFork(t_philo *philo)
 {
@@ -87,7 +70,7 @@ int	main(int ac, char **av)
 		|| table.time_to_eat <= 0 || table.time_to_sleep <= 0)
 	{
 		ft_putstr_fd("\nDeu ruim1\n", 1);
-		return (1);
+		return (EXIT_FAILURE);
 	}
 	all_philo = ft_calloc(table.number_of_philosophers, sizeof(t_philo));
 	table.all_fork = ft_calloc(table.number_of_philosophers, \
@@ -100,7 +83,7 @@ int	main(int ac, char **av)
 		all_philo[count].table = &table;
 		pthread_mutex_init(&all_philo[count].eat_now, 0);
 		if (pthread_mutex_init(&table.all_fork[count], 0) < 0)
-			return (1);
+			return (EXIT_FAILURE);
 		count++;
 	}
 	if (table.number_of_philosophers == 1)
@@ -109,7 +92,7 @@ int	main(int ac, char **av)
 		table.simulation_running = true;
 		print_action(DIED, &all_philo[0]);
 		ft_destroy(all_philo);
-		return (1);
+		return (EXIT_SUCCESS);
 	}
 	ft_delegateFork(all_philo);
 	count = 0;
@@ -119,7 +102,7 @@ int	main(int ac, char **av)
 	{
 		if (pthread_create(&all_philo[count].thread_id, NULL, \
 			&routine, &all_philo[count]) != 0)
-			return (1);
+			return (EXIT_FAILURE);
 		sleep_routine(1);
 		count++;
 	}
@@ -127,15 +110,15 @@ int	main(int ac, char **av)
 	while (count < table.number_of_philosophers)
 	{
 		if (pthread_join(all_philo[count].thread_id, NULL) != 0)
-			return (1);
+			return (EXIT_FAILURE);
 		count++;
 	}
 	if (ac > 5)
 	{
 		if (pthread_join(table.verify_each_eat, NULL) != 0)
-			return (1);
+			return (EXIT_FAILURE);
 	}
 	pthread_mutex_destroy(&table.how_philo_eat);
 	ft_destroy(all_philo);
-	return (0);
+	return (EXIT_SUCCESS);
 }
