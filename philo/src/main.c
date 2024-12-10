@@ -60,7 +60,7 @@ void	*verify_philo_eat(void *data)
 	return (NULL);
 }
 
-int main(int ac, char **av)
+int	main(int ac, char **av)
 {
 	int		count;
 	t_table	table;
@@ -90,7 +90,7 @@ int main(int ac, char **av)
 		return (1);
 	}
 	all_philo = ft_calloc(table.number_of_philosophers, sizeof(t_philo));
-	table.all_fork = ft_calloc(table.number_of_philosophers \
+	table.all_fork = ft_calloc(table.number_of_philosophers, \
 	sizeof(pthread_mutex_t));
 	count = 0;
 	pthread_mutex_init(&table.write_action, 0);
@@ -130,9 +130,11 @@ int main(int ac, char **av)
 			return (1);
 		count++;
 	}
-	if ( ac > 5)
+	if (ac > 5)
+	{
 		if (pthread_join(table.verify_each_eat, NULL) != 0)
 			return (1);
+	}
 	pthread_mutex_destroy(&table.how_philo_eat);
 	ft_destroy(all_philo);
 	return (0);
