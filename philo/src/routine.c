@@ -16,7 +16,7 @@ void sleep_routine(int time_sleep)
 	time_now = ft_get_time() + time_sleep;
 	while (ft_get_time() < time_now)
 	{
-		usleep(time_sleep / 2);
+		usleep(time_sleep / 10);
 	}
 }
 
