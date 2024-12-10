@@ -10,18 +10,9 @@ static	void ft_delegateFork(t_philo *philo)
 	table = philo->table;
 	while (count < table->number_of_philosophers)
 	{
-		if ((count % 2) == 0)
-		{
-			philo[count].fork_left = &table->all_fork[count];
-			philo[count].fork_right = &table->all_fork[(count + 1) % \
-			table->number_of_philosophers];
-		}
-		else
-		{
-			philo[count].fork_right = &table->all_fork[count];
-			philo[count].fork_left = &table->all_fork[(count + 1) % \
-			table->number_of_philosophers];
-		}
+		philo[count].fork_left = &table->all_fork[count];
+		philo[count].fork_right = &table->all_fork[(count + 1) % \
+		table->number_of_philosophers];
 		count++;
 	}
 }
@@ -35,10 +26,9 @@ void	*verify_philo_eat(void *data)
 	{
 		pthread_mutex_lock(&table->how_philo_eat);
 		if (table->quantity_have_philo \
-		>= table->number_of_times_each_philosopher_must_eat)
+		>= table->number_of_philosophers)
 			table->simulation_running = false;
 		pthread_mutex_unlock(&table->how_philo_eat);
-		sleep_routine(10);
 	}
 	return (NULL);
 }
