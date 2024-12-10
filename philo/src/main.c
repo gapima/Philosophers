@@ -33,13 +33,25 @@ void	*verify_philo_eat(void *data)
 	return (NULL);
 }
 
+void	when_is_one_philo(t_philo *philo)
+{
+	
+	pthread_create(&philo[0].thread_id, NULL, &routine, &philo[0]);
+	pthread_detach(philo->thread_id);
+	while (philo->table->simulation_running)
+	{
+		sleep_routine(0);
+	}
+	ft_destroy(philo);
+}
+
 int	main(int ac, char **av)
 {
 	int		count;
 	t_table	table;
 	t_philo	*all_philo;
 
-	table.number_of_times_each_philosopher_must_eat = -1;
+	table.number_of_times_each_philosopher_must_eat = 0;
 	table.quantity_have_philo = 0;
 	if (ac < 5)
 	{
@@ -54,6 +66,11 @@ int	main(int ac, char **av)
 	if (ac > 5)
 	{
 		table.number_of_times_each_philosopher_must_eat = ft_atoi(av[5]);
+		if (table.number_of_times_each_philosopher_must_eat <= 0)
+		{
+			ft_putstr_fd("\nDeu ruim1\n", 1);
+			return (EXIT_FAILURE);
+		}
 		pthread_create(&table.verify_each_eat, NULL, verify_philo_eat, &table);
 	}
 	if (table.number_of_philosophers <= 0 || table.time_to_die <= 0 \
@@ -76,18 +93,15 @@ int	main(int ac, char **av)
 			return (EXIT_FAILURE);
 		count++;
 	}
-	if (table.number_of_philosophers == 1)
-	{
-		table.time_start = ft_get_time();
-		table.simulation_running = true;
-		print_action(DIED, &all_philo[0]);
-		ft_destroy(all_philo);
-		return (EXIT_SUCCESS);
-	}
 	ft_delegateFork(all_philo);
 	count = 0;
 	table.time_start = ft_get_time();
 	table.simulation_running = true;
+	if (table.number_of_philosophers == 1)
+	{
+		when_is_one_philo(all_philo);
+		return (EXIT_SUCCESS);
+	}
 	while (count < table.number_of_philosophers)
 	{
 		if (pthread_create(&all_philo[count].thread_id, NULL, \
