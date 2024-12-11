@@ -17,7 +17,7 @@ void sleep_routine(int time_sleep)
 	time_now = ft_get_time() + time_sleep;
 	while (ft_get_time() < time_now)
 	{
-		usleep(time_sleep / 2);
+		usleep(time_sleep / 10);
 	}
 }
 
@@ -31,6 +31,13 @@ void   eat_routine(t_philo *philo)
 	sleep_routine(philo->table->time_to_eat);
 	pthread_mutex_unlock(&philo->eat_now);
 	leave_forks(philo);
+	if (philo->quantity_eat == philo->table->number_of_times_each_philosopher_must_eat)
+	{
+		pthread_mutex_lock(&philo->table->how_philo_eat);
+		philo->table->quantity_have_philo++;
+		philo->quantity_eat++;
+		pthread_mutex_unlock(&philo->table->how_philo_eat);
+	}
 }
 
 void    *check_died(void *data)
@@ -48,14 +55,8 @@ void    *check_died(void *data)
 			pthread_mutex_unlock(&philo->eat_now);
 			break;
 		}
-		if (philo->quantity_eat == philo->table->number_of_times_each_philosopher_must_eat)
-		{
-			pthread_mutex_lock(&philo->table->how_philo_eat);
-			philo->table->quantity_have_philo++;
-			philo->quantity_eat++;
-			pthread_mutex_unlock(&philo->table->how_philo_eat);
-		}
 		pthread_mutex_unlock(&philo->eat_now);
+		sleep_routine(5);
 	}
 	return (NULL);
 }

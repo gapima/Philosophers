@@ -30,8 +30,14 @@ static void ft_delegateFork(t_philo *philo)
 	table = philo->table;
 	while (count < table->number_of_philosophers)
 	{
-		philo[count].fork_left = &table->all_fork[count];
-		philo[count].fork_right = &table->all_fork[(count + 1) % table->number_of_philosophers];
+		if (count % 2 == 0) {
+			philo[count].fork_left = &table->all_fork[count];
+			philo[count].fork_right = &table->all_fork[(count + 1) % table->number_of_philosophers];
+		}
+		else {
+			philo[count].fork_left = &table->all_fork[(count + 1) % table->number_of_philosophers];
+			philo[count].fork_right = &table->all_fork[count];
+		}
 		count++;	
 	}
 }
@@ -119,7 +125,7 @@ int main(int ac, char **av)
 		if (pthread_create(&all_philo[count].thread_id, NULL, \
 										 &routine, &all_philo[count]) != 0)
 			return (1);
-		sleep_routine(table.number_of_philosophers-count);
+		sleep_routine(1);
 		count++;
 	}
 	count = 0;
