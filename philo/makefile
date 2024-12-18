@@ -3,16 +3,14 @@
 NAME = philo
 
 CC = cc
-CFLAGS = -g3 -Wunreachable-code -Ofast
+CFLAGS = -g3 -Wall -Wextra -Werror -lpthread
 RM = rm -f
 
 INC = ./include
-LIBFT = ./libft
 
 HEADERS = -I $(INC)
-LIBS = ./libft/libft.a
 
-FILES = src/main.c
+FILES = src/main.c src/routine.c src/output.c src/exit.c src/utils.c
 OBJS = $(FILES:%.c=%.o)
 
 all: $(NAME)
@@ -21,16 +19,16 @@ all: $(NAME)
 	@$(CC) $(CFLAGS) $(HEADERS)	-c $< -o $@
 
 $(NAME): $(OBJS)
-	@make -C $(LIBFT)
-	@$(CC) $(OBJS) $(LIBS) $(HEADERS) -o $(NAME)
+	@make -C
+	@$(CC) $(OBJS) $(HEADERS) -o $(NAME)
 	@echo "SUCCESS!!"
 
 clean:
 	@rm -rf $(OBJS)
-	@make clean -C libft
+	@make clean -C
 
 fclean: clean
-	@make fclean -C libft
+	@make fclean -C
 	@rm -rf
 	@$(RM) $(NAME)
 

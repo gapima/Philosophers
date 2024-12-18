@@ -1,4 +1,4 @@
-#ifndef PHILO_H
+#ifndef	PHILO_H
 # define PHILO_H
 
 # include <pthread.h>
@@ -8,29 +8,59 @@
 # include <stdlib.h>
 # include <sys/time.h>
 # include <stdbool.h>
-# include "../libft/libft.h"
 
 typedef struct s_table
 {
-	int 			number_of_philosophers;
-	int 			time_to_die;
-	int 			time_to_eat;
-	int 			time_to_sleep;
+	int				number_of_philosophers;
+	int				time_to_die;
+	int				time_to_eat;
+	int				time_to_sleep;
 	int				number_of_times_each_philosopher_must_eat;
-	pthread_mutex_t *all_fork;
-} t_table;
+	pthread_t		verify_each_eat;
+	int				quantity_have_philo;
+	pthread_mutex_t	how_philo_eat;
+	pthread_mutex_t	*all_fork;
+	bool			simulation_running;
+	unsigned long	time_start;
+	pthread_mutex_t	write_action;
+}	t_table;
 
 typedef struct s_philo
 {
 	pthread_t		thread_id;
 	int				id;
-	pthread_mutex_t *fork_left;
-	pthread_mutex_t *fork_rigth;
+	pthread_mutex_t	*fork_left;
+	pthread_mutex_t	*fork_right;
 	int				quantity_eat;
 	pthread_mutex_t	eat_now;
 	long			eat_last_time;
 	t_table			*table;
-} t_philo;
+}	t_philo;
 
+typedef enum e_action
+{
+	THINKING,
+	EATING,
+	SLEEPING,
+	DIED,
+	HUNGRY
+}	t_action;
+
+void	*routine(void *data);
+long	ft_get_time();
+void	print_action(t_action action, t_philo *philo);
+void	sleep_routine(int time_sleep);
+void	leave_forks(t_philo *philo);
+void	get_forks(t_philo *philo);
+void	eat_routine(t_philo *philo);
+void	ft_destroy(t_philo *philo);
+void	ft_putstr_fd(char *s, int fd);
+void	*ft_calloc(size_t nmemb, size_t size);
+long	ft_atoi(const char *nptr);
+void	ft_putendl_fd(char *s, int fd);
+void	ft_putnbr_fd(int n, int fd);
+void	ft_putchar_fd(char c, int fd);
+void	ft_bzero(void *s, size_t n);
+void	*ft_memset(void *s, int c, size_t n);
 
 #endif
