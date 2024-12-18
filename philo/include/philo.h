@@ -62,5 +62,10 @@ void	ft_putnbr_fd(int n, int fd);
 void	ft_putchar_fd(char c, int fd);
 void	ft_bzero(void *s, size_t n);
 void	*ft_memset(void *s, int c, size_t n);
+void	*verify_philo_eat(void *data);
+int		ft_init_args(t_table *table, int ac, char **av);
+void	ft_delegateFork(t_philo *philo);
+int		ft_play(t_philo *all_philo, int count, t_table *table);
+void	when_is_one_philo(t_philo *philo);
 
 #endif

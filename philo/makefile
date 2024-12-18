@@ -1,5 +1,3 @@
-
-
 NAME = philo
 
 CC = cc
@@ -10,27 +8,25 @@ INC = ./include
 
 HEADERS = -I $(INC)
 
-FILES = src/main.c src/routine.c src/output.c src/exit.c src/utils.c
+FILES = src/main.c src/routine.c src/output.c src/exit.c src/utils0.c src/utils1.c
 OBJS = $(FILES:%.c=%.o)
 
 all: $(NAME)
 
 %.o: %.c
-	@$(CC) $(CFLAGS) $(HEADERS)	-c $< -o $@
+	@$(CC) $(CFLAGS) $(HEADERS) -c $< -o $@
 
 $(NAME): $(OBJS)
-	@make -C
-	@$(CC) $(OBJS) $(HEADERS) -o $(NAME)
+	@$(CC) $(OBJS) $(CFLAGS) $(HEADERS) -o $(NAME)
 	@echo "SUCCESS!!"
 
 clean:
-	@rm -rf $(OBJS)
-	@make clean -C
+	@$(RM) $(OBJS)
+	@echo "Objects cleaned!"
 
 fclean: clean
-	@make fclean -C
-	@rm -rf
 	@$(RM) $(NAME)
+	@echo "Executable cleaned!"
 
 re: fclean all
 
