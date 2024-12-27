@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   main.c                                             :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: glima <gapima7@gmail.com>                  +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2024/12/27 15:48:07 by glima             #+#    #+#             */
+/*   Updated: 2024/12/27 15:48:07 by glima            ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "philo.h"
 #include <stdlib.h>
 
@@ -50,6 +62,7 @@ int	main(int ac, char **av)
 	t_table	table;
 	t_philo	*all_philo;
 
+	table.simulation_running = true;
 	if (ac < 5)
 	{
 		ft_putstr_fd("Deu ruim0\n", 1);

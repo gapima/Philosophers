@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   utils1.c                                           :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: glima <gapima7@gmail.com>                  +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2024/12/27 15:48:22 by glima             #+#    #+#             */
+/*   Updated: 2024/12/27 15:48:22 by glima            ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "philo.h"
 
 void	ft_bzero(void *s, size_t n)
@@ -34,10 +46,10 @@ int	ft_init_args(t_table *table, int ac, char **av)
 			ft_putstr_fd("\nDeu ruim1\n", 1);
 			return (EXIT_FAILURE);
 		}
-		pthread_create(&table->verify_each_eat, NULL, verify_philo_eat, &table);
+		pthread_create(&table->verify_each_eat, NULL, verify_philo_eat, table);
 	}
-	if (table->number_of_philosophers <= 0 || table->time_to_die <= 0 \
-		|| table->time_to_eat <= 0 || table->time_to_sleep <= 0)
+	if (table->number_of_philosophers <= 0 || table->time_to_die < 0 \
+		|| table->time_to_eat < 0 || table->time_to_sleep < 0)
 	{
 		ft_putstr_fd("\nDeu ruim1\n", 1);
 		return (EXIT_FAILURE);
@@ -63,7 +75,6 @@ int	ft_play(t_philo *all_philo, int count, t_table *table)
 	ft_delegateFork(all_philo);
 	count = 0;
 	table->time_start = ft_get_time();
-	table->simulation_running = true;
 	if (table->number_of_philosophers == 1)
 	{
 		when_is_one_philo(all_philo);
