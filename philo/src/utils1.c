@@ -47,7 +47,6 @@ int	ft_init_args(t_table *table, int ac, char **av)
 
 int	ft_play(t_philo *all_philo, int count, t_table *table)
 {
-	all_philo = ft_calloc(table->number_of_philosophers, sizeof(t_philo));
 	table->all_fork = ft_calloc(table->number_of_philosophers, \
 	sizeof(pthread_mutex_t));
 	count = 0;
@@ -68,7 +67,7 @@ int	ft_play(t_philo *all_philo, int count, t_table *table)
 	if (table->number_of_philosophers == 1)
 	{
 		when_is_one_philo(all_philo);
-		return (EXIT_SUCCESS);
+		return (EXIT_FAILURE);
 	}
 	while (count < table->number_of_philosophers)
 	{
