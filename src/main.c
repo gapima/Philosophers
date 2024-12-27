@@ -65,8 +65,15 @@ int	main(int ac, char **av)
 	table.simulation_running = true;
 	if (ac < 5)
 	{
-		ft_putstr_fd("Deu ruim0\n", 1);
-		return (1);
+		ft_putstr_fd("Usage: number_of_philosophers time_to_die "
+				"time_to_eat time_to_sleep "
+				"[number_of_times_each_philosopher_must_eat]", 1);
+		return (EXIT_FAILURE);
+	}
+	if (ac > 6)
+	{
+		ft_putstr_fd("Too many arguments", 1);
+		return (EXIT_FAILURE);
 	}
 	if (ft_init_args(&table, ac, av) != 0)
 		return (EXIT_FAILURE);
