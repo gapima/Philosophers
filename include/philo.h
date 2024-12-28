@@ -28,6 +28,7 @@ typedef struct s_table
 	int				time_to_eat;
 	int				time_to_sleep;
 	int				number_of_times_each_philosopher_must_eat;
+	int				all_ready;
 	pthread_t		verify_each_eat;
 	int				quantity_have_philo;
 	pthread_mutex_t	how_philo_eat;

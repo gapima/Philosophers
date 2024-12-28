@@ -55,7 +55,6 @@ void	when_is_one_philo(t_philo *philo)
 {
 	pthread_create(&philo[0].thread_id, NULL, &routine, &philo[0]);
 	pthread_join(philo->thread_id, NULL);
-	/*ft_destroy(philo);*/
 }
 
 int	main(int ac, char **av)

@@ -85,7 +85,7 @@ int	ft_play(t_philo *all_philo, int count, t_table *table)
 		if (pthread_create(&all_philo[count].thread_id, NULL, \
 			&routine, &all_philo[count]) != 0)
 			return (EXIT_FAILURE);
-		sleep_routine(1);
+		/*sleep_routine(1);*/
 		count++;
 	}
 	count = 0;
