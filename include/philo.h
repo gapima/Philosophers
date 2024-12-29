@@ -85,5 +85,8 @@ bool	bool_read_safe(t_table *table);
 void	bool_write_safe(t_table *table, bool val);
 void	bool_write_safe_b(t_table *table);
 void	ft_one_philo(t_philo *philo);
-void    ft_parsing(int ac);
+void	ft_parsing(int ac);
+int		ft_initmutex(t_table *table, t_philo *all_philo, int count);
+int		ft_verify_onephilo(t_table *table, t_philo *all_philo);
+
 #endif
