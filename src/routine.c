@@ -12,7 +12,7 @@
 
 #include "philo.h"
 
-long	ft_get_time()
+long	ft_get_time(void)
 {
 	struct timeval	tv;
 
@@ -21,7 +21,7 @@ long	ft_get_time()
 	exit(0);
 }
 
-void sleep_routine(int time_sleep)
+void	sleep_routine(int time_sleep)
 {
 	long	time_now;
 
@@ -42,7 +42,8 @@ void	eat_routine(t_philo *philo)
 	sleep_routine(philo->table->time_to_eat);
 	pthread_mutex_unlock(&philo->eat_now);
 	leave_forks(philo);
-	if (philo->quantity_eat == philo->table->number_of_times_each_philosopher_must_eat)
+	if (philo->quantity_eat == \
+	philo->table->number_of_times_each_philosopher_must_eat)
 	{
 		pthread_mutex_lock(&philo->table->how_philo_eat);
 		philo->table->quantity_have_philo++;
@@ -51,17 +52,19 @@ void	eat_routine(t_philo *philo)
 	}
 }
 
-bool bool_read_safe(t_table *table) {
-	bool r;
+bool	bool_read_safe(t_table *table)
+{
+	bool	r;
 
 	r = false;
 	pthread_mutex_lock(&table->read_mutex);
 	r = table->simulation_running;
 	pthread_mutex_unlock(&table->read_mutex);
-	return r;
+	return (r);
 }
 
-void bool_write_safe(t_table *table, bool val) {
+void	bool_write_safe(t_table *table, bool val)
+{
 	pthread_mutex_lock(&table->read_mutex);
 	table->simulation_running = val;
 	pthread_mutex_unlock(&table->read_mutex);
@@ -80,31 +83,35 @@ void	*check_died(void *data)
 			print_action(DIED, philo);
 			bool_write_safe(philo->table, false);
 			pthread_mutex_unlock(&philo->eat_now);
-			break;
+			break ;
 		}
 		pthread_mutex_unlock(&philo->eat_now);
 	}
 	return (NULL);
 }
 
-void ft_one_philo(t_philo *philo) {
+void	ft_one_philo(t_philo *philo)
+{
 	pthread_mutex_lock(philo->fork_left);
 	print_action(HUNGRY, philo);
 	sleep_routine(philo->table->time_to_die);
 	pthread_mutex_unlock(philo->fork_left);
 }
 
-bool bool_read_safe_a(t_table *table) {
-	bool r;
+bool	bool_read_safe_a(t_table *table)
+{
+	bool	r;
 
 	r = false;
 	pthread_mutex_lock(&table->read_mutex);
-	r = table->all_ready < table->number_of_philosophers; 
+	r = table->all_ready < \
+	table->number_of_philosophers;
 	pthread_mutex_unlock(&table->read_mutex);
-	return r;
+	return (r);
 }
 
-void bool_write_safe_b(t_table *table) {
+void	bool_write_safe_b(t_table *table)
+{
 	pthread_mutex_lock(&table->read_mutex);
 	table->all_ready++;
 	pthread_mutex_unlock(&table->read_mutex);
@@ -117,26 +124,26 @@ void	*routine(void *data)
 
 	philo = data;
 	philo->eat_last_time = ft_get_time();
-
 	bool_write_safe_b(philo->table);
-	while (bool_read_safe_a(philo->table)) {} 
-
+	while (bool_read_safe_a(philo->table))
+	{
+	}
 	pthread_create(&thread, NULL, check_died, philo);
-	if (philo->table->number_of_philosophers == 1) {
+	if (philo->table->number_of_philosophers == 1)
+	{
 		ft_one_philo(philo);
 		pthread_join(thread, NULL);
 		return (NULL);
 	}
-
 	while (bool_read_safe(philo->table))
 	{
 		eat_routine(philo);
 		print_action(THINKING, philo);
-		if (philo->table->number_of_philosophers % 2 == 1) {
+		if (philo->table->number_of_philosophers % 2 == 1)
+		{
 			sleep_routine(1);
 		}
 	}
-
 	pthread_join(thread, NULL);
 	return (NULL);
 }

@@ -43,7 +43,7 @@ int	ft_init_args(t_table *table, int ac, char **av)
 		table->number_of_times_each_philosopher_must_eat = ft_atoi(av[5]);
 		if (table->number_of_times_each_philosopher_must_eat <= 0)
 		{
-			ft_putstr_fd("\nDeu ruim1\n", 1);
+			ft_putstr_fd("\nnegative parameter and zero will be invalid\n", 1);
 			return (EXIT_FAILURE);
 		}
 		pthread_create(&table->verify_each_eat, NULL, verify_philo_eat, table);
@@ -51,7 +51,7 @@ int	ft_init_args(t_table *table, int ac, char **av)
 	if (table->number_of_philosophers <= 0 || table->time_to_die < 0 \
 		|| table->time_to_eat < 0 || table->time_to_sleep < 0)
 	{
-		ft_putstr_fd("\nDeu ruim1\n", 1);
+		ft_putstr_fd("\nnegative parameter and zero will be invalid\n", 1);
 		return (EXIT_FAILURE);
 	}
 	return (EXIT_SUCCESS);
@@ -72,7 +72,7 @@ int	ft_play(t_philo *all_philo, int count, t_table *table)
 			return (EXIT_FAILURE);
 		count++;
 	}
-	ft_delegateFork(all_philo);
+	ft_delegate_fork(all_philo);
 	count = 0;
 	table->time_start = ft_get_time();
 	if (table->number_of_philosophers == 1)
@@ -85,7 +85,6 @@ int	ft_play(t_philo *all_philo, int count, t_table *table)
 		if (pthread_create(&all_philo[count].thread_id, NULL, \
 			&routine, &all_philo[count]) != 0)
 			return (EXIT_FAILURE);
-		/*sleep_routine(1);*/
 		count++;
 	}
 	count = 0;

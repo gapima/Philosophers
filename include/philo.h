@@ -10,7 +10,7 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef	PHILO_H
+#ifndef PHILO_H
 # define PHILO_H
 
 # include <pthread.h>
@@ -61,7 +61,7 @@ typedef enum e_action
 }	t_action;
 
 void	*routine(void *data);
-long	ft_get_time();
+long	ft_get_time(void);
 void	print_action(t_action action, t_philo *philo);
 void	sleep_routine(int time_sleep);
 void	leave_forks(t_philo *philo);
@@ -78,10 +78,9 @@ void	ft_bzero(void *s, size_t n);
 void	*ft_memset(void *s, int c, size_t n);
 void	*verify_philo_eat(void *data);
 int		ft_init_args(t_table *table, int ac, char **av);
-void	ft_delegateFork(t_philo *philo);
+void	ft_delegate_fork(t_philo *philo);
 int		ft_play(t_philo *all_philo, int count, t_table *table);
 void	when_is_one_philo(t_philo *philo);
-bool bool_read_safe(t_table *table);
-void bool_write_safe(t_table *table, bool val);
-
+bool	bool_read_safe(t_table *table);
+void	bool_write_safe(t_table *table, bool val);
 #endif

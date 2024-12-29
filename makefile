@@ -1,7 +1,7 @@
 NAME = philo
 
 CC = cc
-CFLAGS = -O2 -Wall -Wextra -Werror -lpthread -fsanitize=thread
+CFLAGS = -Wall -Wextra -Werror -lpthread #-fsanitize=thread #-02 
 RM = rm -f
 
 INC = ./include
