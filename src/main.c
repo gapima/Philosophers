@@ -22,11 +22,12 @@ void	ft_delegateFork(t_philo *philo)
 	table = philo->table;
 	while (count < table->number_of_philosophers)
 	{
-		if (count % 2 == 0) {
+		if (count % 2 == 1) {
 			philo[count].fork_left = &table->all_fork[count];
 			philo[count].fork_right = &table->all_fork[(count + 1) % \
 				table->number_of_philosophers];
-		} else {
+		}
+		else {
 			philo[count].fork_right = &table->all_fork[count];
 			philo[count].fork_left = &table->all_fork[(count + 1) % \
 				table->number_of_philosophers];
