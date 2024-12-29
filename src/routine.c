@@ -87,9 +87,7 @@ void	*routine(void *data)
 		eat_routine(philo);
 		print_action(THINKING, philo);
 		if (philo->table->number_of_philosophers % 2 == 1)
-		{
 			sleep_routine(1);
-		}
 	}
 	pthread_join(thread, NULL);
 	return (NULL);

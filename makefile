@@ -8,7 +8,7 @@ INC = ./include
 
 HEADERS = -I $(INC)
 
-FILES = src/main.c src/routine.c src/output.c src/exit.c src/utils0.c src/utils1.c src/utils2.c
+FILES = src/main.c src/routine.c src/output.c src/exit.c src/utils0.c src/utils1.c src/utils2.c src/utils3.c
 OBJS = $(FILES:%.c=%.o)
 
 all: $(NAME)
