@@ -54,3 +54,14 @@ void	print_action(t_action action, t_philo *philo)
 		ft_putendl_fd(" has taken a fork", 1);
 	pthread_mutex_unlock(&philo->table->write_action);
 }
+
+void	sleep_routine(int time_sleep)
+{
+	long	time_now;
+
+	time_now = ft_get_time() + time_sleep;
+	while (ft_get_time() < time_now)
+	{
+		usleep(time_sleep / 10);
+	}
+}

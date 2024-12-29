@@ -29,3 +29,28 @@ void	ft_destroy(t_philo *philo)
 	free(philo);
 	free(table->all_fork);
 }
+
+bool	bool_read_safe(t_table *table)
+{
+	bool	r;
+
+	r = false;
+	pthread_mutex_lock(&table->read_mutex);
+	r = table->simulation_running;
+	pthread_mutex_unlock(&table->read_mutex);
+	return (r);
+}
+
+void	bool_write_safe(t_table *table, bool val)
+{
+	pthread_mutex_lock(&table->read_mutex);
+	table->simulation_running = val;
+	pthread_mutex_unlock(&table->read_mutex);
+}
+
+void	bool_write_safe_b(t_table *table)
+{
+	pthread_mutex_lock(&table->read_mutex);
+	table->all_ready++;
+	pthread_mutex_unlock(&table->read_mutex);
+}

@@ -12,17 +12,6 @@
 
 #include "philo.h"
 
-void	ft_putstr_fd(char *s, int fd)
-{
-	size_t	i;
-
-	if (s == NULL)
-		return ;
-	i = -1;
-	while (s[++i] != '\0')
-		ft_putchar_fd(s[i], fd);
-}
-
 long	ft_atoi(const char *nptr)
 {
 	long	n;
@@ -97,9 +86,4 @@ void	ft_putnbr_fd(int n, int fd)
 		ft_putchar_fd('-', fd);
 		ft_putnbr_fd(n * -1, fd);
 	}
-}
-
-void	ft_putchar_fd(char c, int fd)
-{
-	write(fd, &c, 1);
 }

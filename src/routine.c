@@ -12,26 +12,6 @@
 
 #include "philo.h"
 
-long	ft_get_time(void)
-{
-	struct timeval	tv;
-
-	if (gettimeofday(&tv, NULL) == 0)
-		return (tv.tv_usec / 1000 + tv.tv_sec * 1000);
-	exit(0);
-}
-
-void	sleep_routine(int time_sleep)
-{
-	long	time_now;
-
-	time_now = ft_get_time() + time_sleep;
-	while (ft_get_time() < time_now)
-	{
-		usleep(time_sleep / 10);
-	}
-}
-
 void	eat_routine(t_philo *philo)
 {
 	get_forks(philo);
@@ -50,24 +30,6 @@ void	eat_routine(t_philo *philo)
 		philo->quantity_eat++;
 		pthread_mutex_unlock(&philo->table->how_philo_eat);
 	}
-}
-
-bool	bool_read_safe(t_table *table)
-{
-	bool	r;
-
-	r = false;
-	pthread_mutex_lock(&table->read_mutex);
-	r = table->simulation_running;
-	pthread_mutex_unlock(&table->read_mutex);
-	return (r);
-}
-
-void	bool_write_safe(t_table *table, bool val)
-{
-	pthread_mutex_lock(&table->read_mutex);
-	table->simulation_running = val;
-	pthread_mutex_unlock(&table->read_mutex);
 }
 
 void	*check_died(void *data)
@@ -90,14 +52,6 @@ void	*check_died(void *data)
 	return (NULL);
 }
 
-void	ft_one_philo(t_philo *philo)
-{
-	pthread_mutex_lock(philo->fork_left);
-	print_action(HUNGRY, philo);
-	sleep_routine(philo->table->time_to_die);
-	pthread_mutex_unlock(philo->fork_left);
-}
-
 bool	bool_read_safe_a(t_table *table)
 {
 	bool	r;
@@ -108,13 +62,6 @@ bool	bool_read_safe_a(t_table *table)
 	table->number_of_philosophers;
 	pthread_mutex_unlock(&table->read_mutex);
 	return (r);
-}
-
-void	bool_write_safe_b(t_table *table)
-{
-	pthread_mutex_lock(&table->read_mutex);
-	table->all_ready++;
-	pthread_mutex_unlock(&table->read_mutex);
 }
 
 void	*routine(void *data)

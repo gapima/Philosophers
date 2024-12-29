@@ -83,4 +83,6 @@ int		ft_play(t_philo *all_philo, int count, t_table *table);
 void	when_is_one_philo(t_philo *philo);
 bool	bool_read_safe(t_table *table);
 void	bool_write_safe(t_table *table, bool val);
+void	bool_write_safe_b(t_table *table);
+void	ft_one_philo(t_philo *philo);
 #endif
