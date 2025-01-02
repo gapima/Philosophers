@@ -59,7 +59,7 @@ void	*routine_onephilo(void *data)
 
 	philo = data;
 	philo->eat_last_time = ft_get_time();
-	bool_inc_safe(&philo->table->all_ready, &philo->table->write_mutex);
+	int_inc_safe(&philo->table->all_ready, &philo->table->write_mutex);
 	print_action(HUNGRY, philo);
 	sleep_routine(philo->table->time_to_die);
 	return (NULL);

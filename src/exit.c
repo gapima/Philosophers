@@ -50,9 +50,27 @@ void	bool_write_safe(bool *a, bool val, pthread_mutex_t *mutexes)
 	pthread_mutex_unlock(mutexes);
 }
 
-void	bool_inc_safe(int *n, pthread_mutex_t *mutexes)
+void	int_inc_safe(int *n, pthread_mutex_t *mutexes)
 {
 	pthread_mutex_lock(mutexes);
 	*n += 1;
+	pthread_mutex_unlock(mutexes);
+}
+
+int int_read_safe(int *n, pthread_mutex_t *mutexes)
+{
+	int r;
+
+	r = 0;
+	pthread_mutex_lock(mutexes);
+	r = *n;
+	pthread_mutex_unlock(mutexes);
+	return (r);
+}
+
+void	long_set_safe(long *dest, long n, pthread_mutex_t *mutexes)
+{
+	pthread_mutex_lock(mutexes);
+	*dest = n;
 	pthread_mutex_unlock(mutexes);
 }

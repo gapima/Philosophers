@@ -89,5 +89,7 @@ int	ft_play(t_philo *all_philo, int count, t_table *table)
 			return (EXIT_FAILURE);
 		count++;
 	}
+	if (pthread_join(table->verify_died, NULL) != 0)
+		return (EXIT_FAILURE);
 	return (EXIT_SUCCESS);
 }

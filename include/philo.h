@@ -85,11 +85,13 @@ int		ft_play(t_philo *all_philo, int count, t_table *table);
 void	when_is_one_philo(t_philo *philo);
 bool	bool_read_safe(bool *a, pthread_mutex_t *mutexes);
 void	bool_write_safe(bool *a, bool val, pthread_mutex_t *mutexes);
-void	bool_inc_safe(int *n, pthread_mutex_t *mutexes);
+void	int_inc_safe(int *n, pthread_mutex_t *mutexes);
+int		int_read_safe(int *n, pthread_mutex_t *mutexes);
 void	ft_one_philo(t_philo *philo);
 void	ft_parsing(int ac);
 int		ft_initmutex(t_table *table, t_philo *all_philo, int count);
 void	*routine_died(void *data);
 bool	bool_thread_ready(t_table *table);
+void	long_set_safe(long *dest, long n, pthread_mutex_t *mutexes);
 
 #endif
