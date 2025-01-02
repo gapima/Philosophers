@@ -41,14 +41,16 @@ void	ft_delegate_fork(t_philo *philo)
 void	*verify_philo_eat(void *data)
 {
 	t_table	*table;
+	int a;
+	int b;
 
 	table = data;
 	while (bool_read_safe(&table->simulation_running, &table->read_mutex))
 	{
-		pthread_mutex_lock(&table->how_philo_eat);
-		if (table->quantity_have_philo >= table->number_of_philosophers)
-			bool_write_safe(&table->simulation_running, false, &table->write_mutex);
-		pthread_mutex_unlock(&table->how_philo_eat);
+		a = int_read_safe(&table->quantity_have_philo, &table->read_mutex);
+		b = int_read_safe(&table->number_of_philosophers, &table->read_mutex);
+		if (a >= b)
+			bool_write_safe(&table->simulation_running, false, &table->read_mutex);
 	}
 	return (NULL);
 }
@@ -59,7 +61,7 @@ void	*routine_onephilo(void *data)
 
 	philo = data;
 	philo->eat_last_time = ft_get_time();
-	int_inc_safe(&philo->table->all_ready, &philo->table->write_mutex);
+	int_inc_safe(&philo->table->all_ready, &philo->table->read_mutex);
 	print_action(HUNGRY, philo);
 	sleep_routine(philo->table->time_to_die);
 	return (NULL);

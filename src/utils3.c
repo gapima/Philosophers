@@ -46,12 +46,11 @@ int	ft_initmutex(t_table *table, t_philo *all_philo, int count)
 void	*routine_died(void *data)
 {
 	t_philo		*philo;
-	int			i;
 	t_table		*table;
+	int				i;
 
 	philo = data;
 	table = philo->table;
-
 	while (!bool_thread_ready(table))
 	{
 	}
