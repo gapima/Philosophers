@@ -1,0 +1,9 @@
+Não teste com mais de 200 filósofos.
+Não teste com time_to_die, time_to_eat ou time_to_sleep definidos para valores menores que 60 ms.
+Teste 1 800 200 200. O filósofo não deveria comer e deveria morrer.
+Teste 5 800 200 200. Nenhum filósofo deveria morrer.
+Teste 5 800 200 200 7. Nenhum filósofo deve morrer e a simulação deve parar quando todos os filósofos tiverem comido pelo menos 7 vezes.
+Teste 4 410 200 200. Nenhum filósofo deveria morrer.
+Teste 4 310 200 100. Um filósofo deve morrer.
+Teste com 2 filósofos e verifique os diferentes tempos: uma morte adiada em mais de 10 ms é inaceitável.
+Teste com quaisquer valores de sua escolha para verificar todos os requisitos. Garanta que os filósofos morram na hora certa, que eles não roubem garfos, e assim por diante.

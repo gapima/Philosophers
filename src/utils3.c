@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   utils3.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: glima <gapima7@gmail.com>                  +#+  +:+       +#+        */
+/*   By: glima <glima@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/29 13:03:00 by glima             #+#    #+#             */
-/*   Updated: 2024/12/29 13:45:59 by glima            ###   ########.fr       */
+/*   Updated: 2025/01/02 16:59:54 by glima            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,12 +43,33 @@ int	ft_initmutex(t_table *table, t_philo *all_philo, int count)
 	return (EXIT_SUCCESS);
 }
 
-int	ft_verify_onephilo(t_table *table, t_philo *all_philo)
+void	*routine_died(void *data)
 {
-	if (table->number_of_philosophers == 1)
+	t_philo		*philo;
+	int			i;
+	t_table		*table;
+
+	philo = data;
+	table = philo->table;
+
+	while (!bool_thread_ready(table))
 	{
-		when_is_one_philo(all_philo);
-		return (EXIT_SUCCESS);
 	}
-	return (EXIT_FAILURE);
+	while (bool_read_safe(&table->simulation_running, &table->read_mutex))
+	{
+		i = -1;
+		while (++i < table->number_of_philosophers)
+		{
+			pthread_mutex_lock(&philo[i].eat_now);
+			if ((ft_get_time() - philo[i].eat_last_time) >= table->time_to_die)
+			{
+				print_action(DIED, &philo[i]);
+				bool_write_safe(&table->simulation_running, false, &table->write_mutex);
+				pthread_mutex_unlock(&philo[i].eat_now);
+				break ;
+			}
+			pthread_mutex_unlock(&philo[i].eat_now);
+		}
+	}
+	return (NULL);
 }

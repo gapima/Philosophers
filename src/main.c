@@ -43,19 +43,31 @@ void	*verify_philo_eat(void *data)
 	t_table	*table;
 
 	table = data;
-	while (bool_read_safe(table))
+	while (bool_read_safe(&table->simulation_running, &table->read_mutex))
 	{
 		pthread_mutex_lock(&table->how_philo_eat);
 		if (table->quantity_have_philo >= table->number_of_philosophers)
-			bool_write_safe(table, false);
+			bool_write_safe(&table->simulation_running, false, &table->write_mutex);
 		pthread_mutex_unlock(&table->how_philo_eat);
 	}
 	return (NULL);
 }
 
+void	*routine_onephilo(void *data)
+{
+	t_philo		*philo;
+
+	philo = data;
+	philo->eat_last_time = ft_get_time();
+	bool_inc_safe(&philo->table->all_ready, &philo->table->write_mutex);
+	print_action(HUNGRY, philo);
+	sleep_routine(philo->table->time_to_die);
+	return (NULL);
+}
+
 void	when_is_one_philo(t_philo *philo)
 {
-	pthread_create(&philo[0].thread_id, NULL, &routine, &philo[0]);
+	pthread_create(&philo[0].thread_id, NULL, routine_onephilo, &philo[0]);
 	pthread_join(philo->thread_id, NULL);
 }
 
@@ -67,6 +79,7 @@ int	main(int ac, char **av)
 	table.simulation_running = true;
 	ft_parsing(ac);
 	pthread_mutex_init(&table.read_mutex, 0);
+	pthread_mutex_init(&table.write_mutex, 0);
 	if (ft_init_args(&table, ac, av) != 0)
 		return (EXIT_FAILURE);
 	all_philo = ft_calloc(table.number_of_philosophers, sizeof(t_philo));

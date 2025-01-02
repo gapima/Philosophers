@@ -33,7 +33,7 @@ void	print_action(t_action action, t_philo *philo)
 	long	time_now;
 
 	pthread_mutex_lock(&philo->table->write_action);
-	if (!bool_read_safe(philo->table))
+	if (!bool_read_safe(&philo->table->simulation_running, &philo->table->read_mutex))
 	{
 		pthread_mutex_unlock(&philo->table->write_action);
 		return ;

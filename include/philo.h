@@ -37,6 +37,8 @@ typedef struct s_table
 	unsigned long	time_start;
 	pthread_mutex_t	read_mutex;
 	pthread_mutex_t	write_action;
+	pthread_t		verify_died;
+	pthread_mutex_t	write_mutex;
 }	t_table;
 
 typedef struct s_philo
@@ -55,9 +57,9 @@ typedef enum e_action
 {
 	THINKING,
 	EATING,
-	SLEEPING,
 	DIED,
-	HUNGRY
+	HUNGRY,
+	SLEEPING
 }	t_action;
 
 void	*routine(void *data);
@@ -81,12 +83,13 @@ int		ft_init_args(t_table *table, int ac, char **av);
 void	ft_delegate_fork(t_philo *philo);
 int		ft_play(t_philo *all_philo, int count, t_table *table);
 void	when_is_one_philo(t_philo *philo);
-bool	bool_read_safe(t_table *table);
-void	bool_write_safe(t_table *table, bool val);
-void	bool_write_safe_b(t_table *table);
+bool	bool_read_safe(bool *a, pthread_mutex_t *mutexes);
+void	bool_write_safe(bool *a, bool val, pthread_mutex_t *mutexes);
+void	bool_inc_safe(int *n, pthread_mutex_t *mutexes);
 void	ft_one_philo(t_philo *philo);
 void	ft_parsing(int ac);
 int		ft_initmutex(t_table *table, t_philo *all_philo, int count);
-int		ft_verify_onephilo(t_table *table, t_philo *all_philo);
+void	*routine_died(void *data);
+bool	bool_thread_ready(t_table *table);
 
 #endif

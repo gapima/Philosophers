@@ -1,5 +1,6 @@
 {
-    "files.associations": {
-        "philo.h": "c"
-    }
+  "files.associations": {
+    "philo.h": "c"
+  },
+  "C_Cpp_Runner.msvcBatchPath": ""
 }

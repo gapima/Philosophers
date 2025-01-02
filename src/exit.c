@@ -20,6 +20,8 @@ void	ft_destroy(t_philo *philo)
 	count = 0;
 	table = philo->table;
 	pthread_mutex_destroy(&table->write_action);
+	pthread_mutex_destroy(&table->write_mutex);
+	pthread_mutex_destroy(&table->read_mutex);
 	while (count < table->number_of_philosophers)
 	{
 		pthread_mutex_destroy(&philo[count].eat_now);
@@ -30,27 +32,27 @@ void	ft_destroy(t_philo *philo)
 	free(table->all_fork);
 }
 
-bool	bool_read_safe(t_table *table)
+bool	bool_read_safe(bool *a, pthread_mutex_t *mutexes)
 {
 	bool	r;
 
 	r = false;
-	pthread_mutex_lock(&table->read_mutex);
-	r = table->simulation_running;
-	pthread_mutex_unlock(&table->read_mutex);
+	pthread_mutex_lock(mutexes);
+	r = *a;
+	pthread_mutex_unlock(mutexes);
 	return (r);
 }
 
-void	bool_write_safe(t_table *table, bool val)
+void	bool_write_safe(bool *a, bool val, pthread_mutex_t *mutexes)
 {
-	pthread_mutex_lock(&table->read_mutex);
-	table->simulation_running = val;
-	pthread_mutex_unlock(&table->read_mutex);
+	pthread_mutex_lock(mutexes);
+	*a = val;
+	pthread_mutex_unlock(mutexes);
 }
 
-void	bool_write_safe_b(t_table *table)
+void	bool_inc_safe(int *n, pthread_mutex_t *mutexes)
 {
-	pthread_mutex_lock(&table->read_mutex);
-	table->all_ready++;
-	pthread_mutex_unlock(&table->read_mutex);
+	pthread_mutex_lock(mutexes);
+	*n += 1;
+	pthread_mutex_unlock(mutexes);
 }

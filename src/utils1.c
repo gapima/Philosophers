@@ -67,15 +67,21 @@ int	ft_play(t_philo *all_philo, int count, t_table *table)
 	ft_delegate_fork(all_philo);
 	count = 0;
 	table->time_start = ft_get_time();
-	if (ft_verify_onephilo(table, all_philo) == 0)
-		return (EXIT_SUCCESS);
-	while (count < table->number_of_philosophers)
+	if (table->number_of_philosophers == 1)
 	{
-		if (pthread_create(&all_philo[count].thread_id, NULL, \
-			&routine, &all_philo[count]) != 0)
-			return (EXIT_FAILURE);
-		count++;
+		when_is_one_philo(all_philo);
 	}
+	else
+	{
+		while (count < table->number_of_philosophers)
+		{
+			if (pthread_create(&all_philo[count].thread_id, NULL, \
+			&routine, &all_philo[count]) != 0)
+				return (EXIT_FAILURE);
+			count++;
+		}
+	}
+	pthread_create(&table->verify_died, NULL, routine_died, all_philo);
 	count = 0;
 	while (count < table->number_of_philosophers)
 	{
