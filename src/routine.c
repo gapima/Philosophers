@@ -77,6 +77,8 @@ void	*routine(void *data)
 		ft_one_philo(philo);
 		return (NULL);
 	}
+	if ((philo->id + 1) % 2 == 1)
+		think_routine(philo);
 	while (is_simulation_running(philo->table))
 	{
 		eat_sleep_routine(philo);
