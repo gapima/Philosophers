@@ -10,7 +10,7 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "philo.h"
+#include "../include/philo.h"
 
 long	ft_atoi(const char *nptr)
 {
@@ -37,53 +37,53 @@ long	ft_atoi(const char *nptr)
 	return (n * sign);
 }
 
-void	*ft_calloc(size_t nmemb, size_t size)
+time_t ft_get_time(void)
 {
-	char	*array;
-	size_t	full_size;
+	struct timeval	tv;
 
-	full_size = size * nmemb;
-	if (full_size != 0 && full_size / size != nmemb)
-		return (NULL);
-	array = malloc(full_size);
-	if (array == NULL)
-		return (NULL);
-	ft_bzero(array, full_size);
-	return (array);
+	if (gettimeofday(&tv, NULL) == 0)
+		return (tv.tv_usec / 1000 + tv.tv_sec * 1000);
+	exit(0);
 }
 
-void	ft_putendl_fd(char *s, int fd)
+void	ft_parsing(int ac)
 {
-	if (s == NULL)
+	if (ac < 5)
+	{
+		printf("Usage: number_of_philosophers time_to_die "
+			"time_to_eat time_to_sleep "
+			"[number_of_times_each_philosopher_must_eat]\n");
+		exit (0);
+	}
+	if (ac > 6)
+	{
+		printf("Too many arguments\n");
+		exit (0);
+	}
+}
+
+void	print_action(t_action action, t_philo *philo)
+{
+	time_t time_now;
+
+	pthread_mutex_lock(&philo->table->write_mutex);
+	if (!is_simulation_running(philo->table))
+	{
+		pthread_mutex_unlock(&philo->table->write_mutex);
 		return ;
-	ft_putstr_fd(s, fd);
-	ft_putchar_fd('\n', fd);
+	}
+	time_now = ft_get_time() - philo->table->simulation_start;
+	printf("%ld %d ", time_now, philo->id);
+	if (action == DIED)
+		printf("died\n");
+	else if (action == EATING)
+		printf("is eating\n");
+	else if (action == SLEEPING)
+		printf("is sleeping\n");
+	else if (action == THINKING)
+		printf("is thinking\n");
+	else if (action == HUNGRY)
+		printf("%s\n", "has taken a fork");
+	pthread_mutex_unlock(&philo->table->write_mutex);
 }
 
-void	ft_putnbr_fd(int n, int fd)
-{
-	char	c;
-
-	if (n == -2147483648)
-	{
-		ft_putchar_fd('-', fd);
-		ft_putnbr_fd(214748364, fd);
-		ft_putchar_fd('8', fd);
-	}
-	else if (n > 9)
-	{
-		ft_putnbr_fd(n / 10, fd);
-		c = (n % 10 + '0');
-		ft_putchar_fd(c, fd);
-	}
-	else if (n >= 0 && n <= 9)
-	{
-		c = (n + '0');
-		ft_putchar_fd(c, fd);
-	}
-	else
-	{
-		ft_putchar_fd('-', fd);
-		ft_putnbr_fd(n * -1, fd);
-	}
-}

@@ -10,22 +10,57 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "philo.h"
+#include "../include/philo.h"
 
-void	eat_routine(t_philo *philo)
+static void	ft_one_philo(t_philo *philo)
 {
-	get_forks(philo);
+	pthread_mutex_lock(philo->left_fork);
+	print_action(HUNGRY, philo);
+	philo_sleep(philo, philo->table->time_to_die);
+	print_action(DIED, philo);
+	pthread_mutex_unlock(philo->left_fork);
+}
+
+static void	eat_sleep_routine(t_philo *philo)
+{
+	take_forks(philo);
 	print_action(EATING, philo);
-	int_inc_safe(&philo->quantity_eat, &philo->eat_now);
-	long_set_safe(&philo->eat_last_time, ft_get_time(), &philo->eat_now);
-	sleep_routine(philo->table->time_to_eat);
-	leave_forks(philo);
-	if (philo->quantity_eat == \
-	philo->table->number_of_times_each_philosopher_must_eat)
+	pthread_mutex_lock(&philo->meal_mutex);
+	philo->last_meal = ft_get_time();
+	pthread_mutex_unlock(&philo->meal_mutex);
+	philo_sleep(philo, philo->table->time_to_eat);
+	if (is_simulation_running(philo->table))
 	{
-		int_inc_safe(&philo->table->quantity_have_philo, &philo->table->read_mutex);
-		int_inc_safe(&philo->quantity_eat, &philo->eat_now);
+		pthread_mutex_lock(&philo->meal_mutex);
+		philo->meal_count++;
+		pthread_mutex_unlock(&philo->meal_mutex);
 	}
+	print_action(SLEEPING, philo);
+	release_forks(philo);
+	philo_sleep(philo, philo->table->time_to_sleep);
+}
+
+void wait_all_threads(time_t start_time)
+{
+	while (ft_get_time() < start_time)
+	{}
+}
+
+static void think_routine(t_philo *philo)
+{
+	time_t	time_to_think;
+
+	pthread_mutex_lock(&philo->meal_mutex);
+	time_to_think = (philo->table->time_to_die
+		- (ft_get_time() - philo->last_meal)
+		- philo->table->time_to_eat) / 2;
+	pthread_mutex_unlock(&philo->meal_mutex);
+	if (time_to_think < 0)
+		time_to_think = 0;
+	if (time_to_think > 600)
+		time_to_think = 200;
+	print_action(THINKING, philo);
+	philo_sleep(philo, time_to_think);
 }
 
 void	*routine(void *data)
@@ -33,23 +68,19 @@ void	*routine(void *data)
 	t_philo		*philo;
 
 	philo = data;
-	philo->eat_last_time = ft_get_time();
-	int_inc_safe(&philo->table->all_ready, &philo->table->read_mutex);
-	while (!bool_thread_ready(philo->table)) {}
-	while (bool_read_safe(&philo->table->simulation_running, &philo->table->read_mutex))
+	pthread_mutex_lock(&philo->meal_mutex);
+	philo->last_meal = philo->table->simulation_start;
+	pthread_mutex_unlock(&philo->meal_mutex);
+	wait_all_threads(philo->table->simulation_start);
+	if (philo->table->number_of_philosophers == 1)
 	{
-		eat_routine(philo);
-		print_action(THINKING, philo);
+		ft_one_philo(philo);
+		return (NULL);
+	}
+	while (is_simulation_running(philo->table))
+	{
+		eat_sleep_routine(philo);
+		think_routine(philo);
 	}
 	return (NULL);
-}
-
-bool	bool_thread_ready(t_table *table)
-{
-	int a;
-	int b;
-
-	a = int_read_safe(&table->all_ready, &table->read_mutex);
-	b = int_read_safe(&table->number_of_philosophers, &table->read_mutex);
-	return (a >= b);
 }

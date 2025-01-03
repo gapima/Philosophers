@@ -10,33 +10,31 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "philo.h"
+#include "../include/philo.h"
 
-void	ft_destroy(t_philo *philo)
+void	ft_destroy(t_table *table)
 {
-	int			count;
-	t_table		*table;
+	int				count;
+	t_philo		*philo;
 
-	count = 0;
-	table = philo->table;
-	pthread_mutex_destroy(&table->write_action);
+	philo = table->philosophers;
 	pthread_mutex_destroy(&table->write_mutex);
-	pthread_mutex_destroy(&table->read_mutex);
-	while (count < table->number_of_philosophers)
+	pthread_mutex_destroy(&table->check_sim_mutex);
+	count = -1;
+	while (++count < table->number_of_philosophers)
 	{
-		pthread_mutex_destroy(&philo[count].eat_now);
-		pthread_mutex_destroy(&table->all_fork[count]);
-		count++;
+		pthread_mutex_destroy(&philo[count].meal_mutex);
+		pthread_mutex_destroy(&table->forks[count]);
 	}
 	free(philo);
-	free(table->all_fork);
+	free(table->forks);
 }
 
 bool	bool_read_safe(bool *a, pthread_mutex_t *mutexes)
 {
 	bool	r;
 
-	r = false;
+	r = true;
 	pthread_mutex_lock(mutexes);
 	r = *a;
 	pthread_mutex_unlock(mutexes);
@@ -47,30 +45,5 @@ void	bool_write_safe(bool *a, bool val, pthread_mutex_t *mutexes)
 {
 	pthread_mutex_lock(mutexes);
 	*a = val;
-	pthread_mutex_unlock(mutexes);
-}
-
-void	int_inc_safe(int *n, pthread_mutex_t *mutexes)
-{
-	pthread_mutex_lock(mutexes);
-	*n += 1;
-	pthread_mutex_unlock(mutexes);
-}
-
-int int_read_safe(int *n, pthread_mutex_t *mutexes)
-{
-	int r;
-
-	r = 0;
-	pthread_mutex_lock(mutexes);
-	r = *n;
-	pthread_mutex_unlock(mutexes);
-	return (r);
-}
-
-void	long_set_safe(long *dest, long n, pthread_mutex_t *mutexes)
-{
-	pthread_mutex_lock(mutexes);
-	*dest = n;
 	pthread_mutex_unlock(mutexes);
 }

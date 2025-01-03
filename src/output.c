@@ -10,58 +10,36 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "philo.h"
+#include "../include/philo.h"
 
-void	get_forks(t_philo *philo)
+void	take_forks(t_philo *philo)
 {
-	pthread_mutex_lock(philo->fork_left);
+	pthread_mutex_lock(philo->left_fork);
 	print_action(HUNGRY, philo);
-	pthread_mutex_lock(philo->fork_right);
+	pthread_mutex_lock(philo->right_fork);
 	print_action(HUNGRY, philo);
 }
 
-void	leave_forks(t_philo *philo)
+void	release_forks(t_philo *philo)
 {
-	pthread_mutex_unlock(philo->fork_right);
-	pthread_mutex_unlock(philo->fork_left);
-	sleep_routine(philo->table->time_to_sleep);
-	print_action(SLEEPING, philo);
+	pthread_mutex_unlock(philo->left_fork);
+	pthread_mutex_unlock(philo->right_fork);
 }
 
-void	print_action(t_action action, t_philo *philo)
+bool is_simulation_running(t_table *table)
 {
-	long	time_now;
-
-	pthread_mutex_lock(&philo->table->write_action);
-	if (!bool_read_safe(&philo->table->simulation_running, &philo->table->read_mutex))
-	{
-		pthread_mutex_unlock(&philo->table->write_action);
-		return ;
-	}
-	time_now = ft_get_time() - philo->table->time_start;
-	ft_putnbr_fd(time_now, 1);
-	ft_putstr_fd(" ", 1);
-	ft_putnbr_fd(philo->id, 1);
-	if (action == DIED)
-		ft_putendl_fd(" died", 1);
-	else if (action == EATING)
-		ft_putendl_fd(" is eating", 1);
-	else if (action == SLEEPING)
-		ft_putendl_fd(" is sleeping", 1);
-	else if (action == THINKING)
-		ft_putendl_fd(" is thinking", 1);
-	else if (action == HUNGRY)
-		ft_putendl_fd(" has taken a fork", 1);
-	pthread_mutex_unlock(&philo->table->write_action);
+	return (bool_read_safe(&table->simulation_running, &table->check_sim_mutex));
 }
 
-void	sleep_routine(int time_sleep)
+void	philo_sleep(t_philo *philo, time_t time)
 {
-	long	time_now;
+	time_t wakeup_time;
 
-	time_now = ft_get_time() + time_sleep;
-	while (ft_get_time() < time_now)
+	wakeup_time = ft_get_time() + time;
+	while (ft_get_time() < wakeup_time)
 	{
-		usleep(time_sleep / 10);
+		if (!is_simulation_running(philo->table))
+			break;
+		usleep(100);
 	}
 }
